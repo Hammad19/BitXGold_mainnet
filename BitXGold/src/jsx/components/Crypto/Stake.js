@@ -560,7 +560,7 @@ const Stake = () => {
                                     {t("claim_header")}
                                   </h4>
                                 </div>
-                                <div className="card-body pt-2 pb-0">
+                                <div className="card-body pt-2 pb-0 table-responsive">
                                   <table className="table shadow-hover orderbookTable">
                                     <thead>
                                       <tr>
