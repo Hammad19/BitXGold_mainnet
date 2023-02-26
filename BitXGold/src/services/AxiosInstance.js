@@ -3,8 +3,8 @@ import { store } from "../store/store";
 
 const axiosInstance = axios.create({
   //baseURL: `http://localhost:4000`,
-  baseURL: `https://api.bitx.gold`,
-  //baseURL: `https://ill-veil-colt.cyclic.app`,
+  //baseURL: `https://api.bitx.gold`,
+  baseURL: `https://ill-veil-colt.cyclic.app`,
 });
 
 axiosInstance.interceptors.request.use((config) => {
