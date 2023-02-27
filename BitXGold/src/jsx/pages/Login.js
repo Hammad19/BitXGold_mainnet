@@ -75,7 +75,7 @@ function Login(props) {
       setAccount(accountAddres);
       setSigner(signerAddress);
 
-      if (chainId === 97) {
+      if (chainId === 56) {
         setdata({
           address: accountAddres,
           Balance: balance,
@@ -117,13 +117,13 @@ function Login(props) {
       const addresses = await provider.send("eth_requestAccounts", []);
       const address = addresses[0];
       const balance = await provider.getBalance(address);
-      if (chainId !== 97) {
+      if (chainId !== 56) {
         await window.ethereum.request({
           method: "wallet_switchEthereumChain",
-          params: [{ chainId: `0x${Number(97).toString(16)}` }],
+          params: [{ chainId: `0x${Number(56).toString(16)}` }],
         });
       }
-      if (chainId === 97) {
+      if (chainId === 56) {
         setdata({
           address: address,
           Balance: balance,
@@ -187,9 +187,15 @@ function Login(props) {
           className="bg-img-fix overflow-hidden "
           style={{
             background: "#fff url(" + bg6 + ")",
+            // cover no-repeat center center fixed",
             backgroundSize: "cover",
+
+            //stretch to fit the page
+            //take the height equal to the height of the viewport
+            minHeight: "100vh",
+
+            backgroundAttachment: "fixed",
             backgroundRepeat: "no-repeat",
-            height: "100vh",
           }}>
           <div className="row gx-0">
             <div className="col-xl-4 col-lg-5 col-md-6 col-sm-12 vh-100 bg-white ">

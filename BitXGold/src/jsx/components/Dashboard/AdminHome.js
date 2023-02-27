@@ -56,10 +56,21 @@ const AdminHome = () => {
   };
   // use effect
   useEffect(() => {
+    setLoader(true);
+    FetchData();
     setTimeout(() => {
       setData(document.querySelectorAll("#future_wrapper tbody tr"));
+      setLoader(false);
     }, 500);
   }, [test]);
+
+  useEffect(() => {
+    FetchData();
+    setTimeout(() => {
+      setData(document.querySelectorAll("#future_wrapper tbody tr"));
+      setLoader(false);
+    }, 1000);
+  }, [requests]);
 
   const [totalBxg, settotalBxg] = useState(0);
   const [totalUsers, settotalUsers] = useState(0);
@@ -99,54 +110,12 @@ const AdminHome = () => {
     setLoader(false);
   };
 
-  useEffect(() => {
-    FetchData();
-  }, []);
-
   const [loader, setLoader] = useState(false);
-  const [isreferred, setisreferred] = useState(false);
-  const provider = new ethers.providers.Web3Provider(window.ethereum);
-  const [addresses, setaddresses] = useState([]);
-  const [fetch, setfetch] = useState(false);
-  const [bxgavailable, setbxgavailable] = useState(0);
-  const [bxgstacked, setbxgstacked] = useState(0);
-  const [referralBonus, setreferralBonus] = useState(0);
-  const [totalEarning, settotalEarning] = useState(0);
-
-  const state = useSelector((state) => state);
-
-  const [referalAddress, setreferalAddress] = useState("");
-
-  const getBonus = async () => {
-    const requestBody = {
-      wallet_address: state.auth.auth.walletaddress,
-      refer_code: referalAddress,
-    };
-    const { data } = await axiosInstance
-      .post("/api/refer", requestBody)
-      .catch((err) => {
-        toast.error(err.response.data.message, {
-          position: "top-center",
-        });
-      });
-
-    if (data === "Refered Successfully.") {
-      toast.success(data);
-      setisreferred(true);
-      handleClose();
-    } else {
-      toast.error(data.message);
-    }
-  };
 
   const { changeBackground } = useContext(ThemeContext);
   useEffect(() => {
     changeBackground({ value: "dark", label: "Dark" });
   }, []);
-
-  const [show, setShow] = useState(false);
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
 
   return (
     <>

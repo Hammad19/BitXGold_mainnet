@@ -12,6 +12,7 @@ import {
 
 const initialState = {
   adminwalletaddress: "0x5A793d6026Df1219a3f603d98DbFee10680026e1",
+  //adminwalletaddress: "0xd22185D98223D4E77430ea72Fc95E2C15Cf7bC3a",
   defultReffer: "0x97A760EeD672A22c0B782F813F30598B8f994038",
   auth: {
     email: "",

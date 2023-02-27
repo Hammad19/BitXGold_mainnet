@@ -18,9 +18,6 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { ThemeContext } from "../../../context/ThemeContext";
 import USDT from "../../../contractAbis/USDT.json";
 //import ServerStatusBar from './Dashboard/ServerStatusBar';
-
-import OrderTab from "../Trading/Future/OrderTab";
-import TradeTab from "../Trading/Future/TradeTab";
 //images
 
 import axiosInstance from "../../../services/AxiosInstance";
@@ -31,6 +28,7 @@ import { useRef } from "react";
 import ClaimTab from "../Trading/Future/ClaimTab";
 import DateRangePicker from "react-bootstrap-daterangepicker";
 import moment from "moment";
+import UserProfileModal from "./UserProfileModal";
 
 const AdminStakeHistory = () => {
   const { t } = useTranslation();
@@ -45,6 +43,28 @@ const AdminStakeHistory = () => {
   const sort = 6;
   const activePag = useRef(0);
   const [test, settest] = useState(0);
+
+  const [showModal, setShowModal] = useState(false);
+  function handleModalClose() {
+    setShowModal(false);
+  }
+
+  const [email, setEmail] = useState("");
+  const [whatsapp, setWhatsapp] = useState("");
+
+  const handleConnectClick = async (walletaddress) => {
+    const { data } = await axiosInstance
+      .get(`/api/profile/${walletaddress}`)
+      .catch((err) => {
+        console.log(err);
+      });
+
+    console.log(data, "data");
+    setEmail(data.email);
+    setWhatsapp(data.whatsapp);
+
+    setShowModal(true);
+  };
 
   var today = new Date();
   today.setDate(today.getDate() + 1);
@@ -205,6 +225,13 @@ const AdminStakeHistory = () => {
     <>
       <Toaster />
 
+      <UserProfileModal
+        show={showModal}
+        onHide={handleModalClose}
+        email={email}
+        whatsapp={whatsapp}
+      />
+
       <div className="row">
         <div className="col-xl-12">
           <div className="card">
@@ -259,7 +286,14 @@ const AdminStakeHistory = () => {
                               .map((item, index) => (
                                 <tr key={index}>
                                   <td>{index + 1}</td>
-                                  <td>{item.wallet_address}</td>
+                                  <td>
+                                    <Link
+                                      onClick={() => {
+                                        handleConnectClick(item.wallet_address);
+                                      }}>
+                                      {item.wallet_address}
+                                    </Link>
+                                  </td>
                                   {/* <td>{item.blockhash}</td> */}
                                   <td>{item.bxg}</td>
 
@@ -349,6 +383,7 @@ const AdminStakeHistory = () => {
                       acceptedData={requests.filter(
                         (item) => item.type === "claim"
                       )}
+                      handleConnectClick={handleConnectClick}
                     />
                   </Tab.Pane>
                 </Tab.Content>

@@ -22,16 +22,37 @@ import { useRef } from "react";
 import { useTranslation } from "react-i18next";
 import moment from "moment";
 import DateRangePicker from "react-bootstrap-daterangepicker";
+import UserProfileModal from "./UserProfileModal";
+import { getUserProfile } from "../../../services/ProfileService";
 
 const Requests = () => {
   const [date, setdate] = useState("");
   const [dataMain, setdataMain] = useState([]);
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const [requests, setRequests] = useState([]);
   const [data, setData] = useState([]);
   const sort = 6;
   const activePag = useRef(0);
   const [test, settest] = useState(0);
+
+  const [showModal, setShowModal] = useState(false);
+  function handleModalClose() {
+    setShowModal(false);
+  }
+
+  const handleConnectClick = async (walletaddress) => {
+    const { data } = await axiosInstance
+      .get(`/api/profile/${walletaddress}`)
+      .catch((err) => {
+        console.log(err);
+      });
+
+    console.log(data, "data");
+    setEmail(data.email);
+    setWhatsapp(data.whatsapp);
+
+    setShowModal(true);
+  };
 
   var today = new Date();
   today.setDate(today.getDate() + 1);
@@ -89,12 +110,14 @@ const Requests = () => {
     }, 1000);
   }, [requests]);
 
+  const [modalShow, setModalShow] = useState(false);
+
+  const [email, setEmail] = useState("");
+  const [whatsapp, setWhatsapp] = useState("");
+
   const FetchData = async () => {
     setLoader(true);
     try {
-      const requestBody = {
-        wallet_address: state.auth.auth.walletaddress,
-      };
       const { data } = await axiosInstance.get("/api/bxghistory/getall");
 
       let temp = filterArray(
@@ -218,27 +241,11 @@ const Requests = () => {
   };
 
   const [loader, setLoader] = useState(false);
-  const [isreferred, setisreferred] = useState(false);
-  const provider = new ethers.providers.Web3Provider(window.ethereum);
-  const [addresses, setaddresses] = useState([]);
-  const [fetch, setfetch] = useState(false);
-  const [bxgavailable, setbxgavailable] = useState(0);
-  const [bxgstacked, setbxgstacked] = useState(0);
-  const [referralBonus, setreferralBonus] = useState(0);
-  const [totalEarning, settotalEarning] = useState(0);
-
-  const state = useSelector((state) => state);
-
-  const [referalAddress, setreferalAddress] = useState("");
 
   const { changeBackground } = useContext(ThemeContext);
   useEffect(() => {
     changeBackground({ value: "dark", label: "Dark" });
   }, []);
-
-  const [show, setShow] = useState(false);
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
 
   const getFormattedDate = (date) => {
     //get only day and month in english
@@ -252,6 +259,12 @@ const Requests = () => {
   return (
     <>
       <Toaster />
+      <UserProfileModal
+        show={showModal}
+        onHide={handleModalClose}
+        email={email}
+        whatsapp={whatsapp}
+      />
 
       <div className="row">
         <div className="col-xl-12">
@@ -308,7 +321,14 @@ const Requests = () => {
                               .map((item, index) => (
                                 <tr key={index}>
                                   <td>{index + 1}</td>
-                                  <td>{item.wallet_address}</td>
+                                  <td>
+                                    <Link
+                                      onClick={() => {
+                                        handleConnectClick(item.wallet_address);
+                                      }}>
+                                      {item.wallet_address}
+                                    </Link>
+                                  </td>
                                   {/* <td>{item.blockhash}</td> */}
                                   <td>{item.bxg}</td>
                                   <td>{item.usdt}</td>
@@ -412,6 +432,7 @@ const Requests = () => {
                       acceptedData={requests.filter(
                         (item) => item.type === "sell_accepted"
                       )}
+                      handleConnectClick={handleConnectClick}
                     />
                   </Tab.Pane>
                   <Tab.Pane eventKey="Trade">
@@ -420,6 +441,7 @@ const Requests = () => {
                       rejectedData={requests.filter(
                         (item) => item.type === "sell_rejected"
                       )}
+                      handleConnectClick={handleConnectClick}
                     />
                   </Tab.Pane>
                 </Tab.Content>

@@ -1,11 +1,13 @@
 import React, { useEffect, useState, useRef } from "react";
 import { Link } from "react-router-dom";
 import { Badge } from "react-bootstrap";
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from "react-i18next";
+import { useSelector } from "react-redux";
 
+const OrderTab = ({ acceptedData, to, handleConnectClick }) => {
+  const { t } = useTranslation();
 
-const OrderTab = ({ acceptedData,to }) => {
-  const { t, i18n } = useTranslation();
+  const state = useSelector((state) => state);
   const [data, setData] = useState(
     document.querySelectorAll("#futureorder_wrapper tbody tr")
   );
@@ -24,7 +26,6 @@ const OrderTab = ({ acceptedData,to }) => {
     }
   };
 
-
   const getFormattedDate = (date) => {
     //get only day and month in english
     const d = new Date(date);
@@ -35,10 +36,8 @@ const OrderTab = ({ acceptedData,to }) => {
   };
   // use effect
   useEffect(() => {
-
     setTimeout(() => {
-
-    setData(document.querySelectorAll("#futureorder_wrapper tbody tr"));
+      setData(document.querySelectorAll("#futureorder_wrapper tbody tr"));
     }, 500);
     //chackboxFun();
   }, [test]);
@@ -67,27 +66,39 @@ const OrderTab = ({ acceptedData,to }) => {
             <thead>
               <tr>
                 <th>ID</th>
-                <th>{t('wallet_address')}</th>
+                <th>{t("wallet_address")}</th>
                 {/* <th>Block Hash</th> */}
                 <th>BXG </th>
-               <th>USDT</th>
-                <th>{t('date')}</th>
-                <th className="text-end">{t('status')}</th>
+                <th>USDT</th>
+                <th>{t("date")}</th>
+                <th className="text-end">{t("status")}</th>
               </tr>
             </thead>
             <tbody>
               {acceptedData.map((item, index) => (
                 <tr key={index}>
-                  <td>{index+1}</td>
-                  <td>{item.wallet_address}</td>
+                  <td>{index + 1}</td>
+                  <td>
+                    {state.auth.auth.isAdmin ? (
+                      <Link
+                        onClick={() => {
+                          handleConnectClick(item.wallet_address);
+                        }}>
+                        {item.wallet_address}
+                      </Link>
+                    ) : (
+                      item.wallet_address
+                    )}
+                  </td>
                   {/* <td>{item.blockhash}</td> */}
                   <td>{item.bxg}</td>
                   <td>{item.usdt}</td>
                   <td>{getFormattedDate(item.updatedAt)}</td>
                   <td className="text-end">
                     <div className="bootstrap-badge">
-                  
-                      <Badge pill  bg="success">{t('accepted')}</Badge>
+                      <Badge pill bg="success">
+                        {t("accepted")}
+                      </Badge>
                     </div>
                   </td>
                 </tr>
@@ -96,11 +107,11 @@ const OrderTab = ({ acceptedData,to }) => {
           </table>
           <div className="d-sm-flex text-center justify-content-between align-items-center mt-3 mb-3">
             <div className="dataTables_info">
-            {t('showing')} {activePag.current * sort + 1} {t('to')}{" "}
+              {t("showing")} {activePag.current * sort + 1} {t("to")}{" "}
               {acceptedData.length > (activePag.current + 1) * sort
                 ? (activePag.current + 1) * sort
                 : acceptedData.length}{" "}
-              {t('of')} {acceptedData.length} {t('entries')}
+              {t("of")} {acceptedData.length} {t("entries")}
             </div>
             <div
               className="dataTables_paginate paging_simple_numbers mb-0"

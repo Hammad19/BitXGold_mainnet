@@ -19,8 +19,31 @@ import { useRef } from "react";
 import { useTranslation } from "react-i18next";
 import moment from "moment";
 import DateRangePicker from "react-bootstrap-daterangepicker";
+import UserProfileModal from "./UserProfileModal";
 
 const AdminBuyHistory = () => {
+  const [email, setEmail] = useState("");
+  const [whatsapp, setWhatsapp] = useState("");
+
+  const [showModal, setShowModal] = useState(false);
+  function handleModalClose() {
+    setShowModal(false);
+  }
+
+  const handleConnectClick = async (walletaddress) => {
+    const { data } = await axiosInstance
+      .get(`/api/profile/${walletaddress}`)
+      .catch((err) => {
+        console.log(err);
+      });
+
+    console.log(data, "data");
+    setEmail(data.email);
+    setWhatsapp(data.whatsapp);
+
+    setShowModal(true);
+  };
+
   const [date, setdate] = useState("");
   const [dataMain, setdataMain] = useState([]);
   const { t } = useTranslation();
@@ -147,15 +170,9 @@ const AdminBuyHistory = () => {
     const [start, end] = dateRange.split(" - ");
     return array.filter((item) => {
       const itemDate = new Date(item.updatedAt);
-      //console.log(itemDate, "itemDate");
-      //console.log(new Date(start), "start");
-      //console.log(new Date(end), "end");
-
-      //set end date to next day of end date
 
       const endDate = new Date(end);
-      //endDate.setDate(endDate.getDate() + 1);
-      //console.log(itemDate >= new Date(start) && itemDate <= new Date(end));
+
       return itemDate >= new Date(start) && itemDate <= new Date(endDate);
     });
   }
@@ -163,6 +180,13 @@ const AdminBuyHistory = () => {
   return (
     <>
       <Toaster />
+
+      <UserProfileModal
+        show={showModal}
+        onHide={handleModalClose}
+        email={email}
+        whatsapp={whatsapp}
+      />
 
       <div className="row">
         <div className="col-xl-12">
@@ -206,7 +230,14 @@ const AdminBuyHistory = () => {
                               .map((item, index) => (
                                 <tr key={index}>
                                   <td>{index + 1}</td>
-                                  <td>{item.wallet_address}</td>
+                                  <td>
+                                    <Link
+                                      onClick={() => {
+                                        handleConnectClick(item.wallet_address);
+                                      }}>
+                                      {item.wallet_address}
+                                    </Link>
+                                  </td>
                                   {/* <td>{item.blockhash}</td> */}
                                   <td>{item.bxg}</td>
                                   <td>{item.usdt}</td>

@@ -18,6 +18,7 @@ import { ThemeContext } from "../../../context/ThemeContext";
 import { useContext } from "react";
 import Loader from "../Loader/Loader";
 import { Logout } from "../../../store/actions/AuthActions";
+import moment from "moment";
 
 const Stake = () => {
   const { t } = useTranslation();
@@ -78,7 +79,7 @@ const Stake = () => {
     const data = await axiosInstance.get(
       "/api/stakehistory/" + requestBody.wallet_address
     );
-    setStakeData(data?.data?.filter((item) => item.type === "Stake"));
+    setStakeData(data?.data?.filter((item) => item.type === "Stake").reverse());
 
     //filter data.data and add all the bxg values and set it to totalamountclaimed
     var amountclaimed = 0;
@@ -428,8 +429,9 @@ const Stake = () => {
   };
 
   const getDate = (date) => {
-    const dateObject = new Date(date);
-    return dateObject.toLocaleString();
+    //get formatted date by auto detecting timezone
+    const formattedDate = moment(date).format("DD MMM YYYY hh:mm A");
+    return formattedDate;
   };
 
   const interval = setInterval(() => {
@@ -560,10 +562,11 @@ const Stake = () => {
                                     {t("claim_header")}
                                   </h4>
                                 </div>
-                                <div className="card-body pt-2 pb-0 table-responsive">
+                                <div className="text-center card-body pt-2 pb-0 table-responsive">
                                   <table className="table shadow-hover orderbookTable">
                                     <thead>
                                       <tr>
+                                        <th>ID</th>
                                         <th>Value(BXG)</th>
                                         <th>Staked Date</th>
                                         <th>Timer</th>
@@ -573,6 +576,7 @@ const Stake = () => {
                                     <tbody>
                                       {stakeData.map((data, index) => (
                                         <tr key={index}>
+                                          <td>{index + 1}</td>
                                           <td>
                                             <span
                                               className={`${

@@ -2,7 +2,6 @@ import React, { useContext, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import { Web3Provider } from "@ethersproject/providers";
-//import icon from src/icons/coin.png;
 import bxgicon from "../../../icons/buy and sell/tokenbxg.png";
 import usdicon from "../../../icons/buy and sell/usdtt.png";
 import usdt from "../../../contractAbis/USDT.json";
@@ -19,16 +18,13 @@ import { useTranslation } from "react-i18next";
 import { Logout } from "../../../store/actions/AuthActions";
 
 const Buy = () => {
-  // create a static value of 6.19931
   const { t } = useTranslation();
   const [loader, setloader] = useState(false);
   const [value, setValue] = useState(0);
   const [bxgvalue, setBxgvalue] = useState(0);
-  //total usdt value
   const [totalUsd, setTotalUsd] = useState(bxgvalue * value);
   const [swap, setswap] = useState();
   const [usdtToken, setusdtToken] = useState();
-  //create handlebuy
 
   const state = useSelector((state) => state);
 
@@ -137,7 +133,6 @@ const Buy = () => {
           var wasAdded = {};
           try {
             if (state.auth.isLoggedInFromMobile === "mobile") {
-              //console.log("mobile");
               wasAdded = await state.auth.provider.request({
                 method: "wallet_watchAsset",
                 params: {
@@ -151,13 +146,12 @@ const Buy = () => {
                 },
               });
             } else if (state.auth.isLoggedInFromMobile === "laptop") {
-              //console.log("laptop");
               wasAdded = await window.ethereum.request({
                 method: "wallet_watchAsset",
                 params: {
                   type: "ERC20",
                   options: {
-                    address: "0xEAC3ce292F95d779732e7a26c95c57A742cf5119",
+                    address: "0x4BBDE1FD97121B68c882fbAfA1C6ee0099c2Eb8b",
                     symbol: "BXG",
                     decimals: 18,
                     image: `https://i.ibb.co/H7P6tFL/Whats-App-Image-2023-02-21-at-11-50-44-PM.jpg`,
@@ -172,7 +166,10 @@ const Buy = () => {
               });
             }
           } catch (error) {
-            console.log("Error: ", error);
+            toast.error(error.message, {
+              position: "top-center",
+              style: { minWidth: 180 },
+            });
           }
           toast.success(tx.blockHash, {
             position: "top-center",
@@ -206,7 +203,7 @@ const Buy = () => {
           });
         }
       } catch (error) {
-        toast.error("Transaction Failed", {
+        toast.error(error.reason, {
           position: "top-center",
           style: { minWidth: 180 },
         });

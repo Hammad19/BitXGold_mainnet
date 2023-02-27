@@ -1,19 +1,17 @@
 {
-    "dashboard" : "Dashboard",
-    "Dashboard" : "Dashboard",
+    "dashboard": "Dashboard",
+    "Dashboard": "Dashboard",
     "Buy": "Buy",
     "Sell": "Sell",
     "Stake": "Stake",
     "Affiliate Awards": "Affiliate Awards",
-   
     "stake-history": "Stake History",
     "staking-referral": "Staking Referral",
     "bonus-referral": "Bonus Referral",
-
     "buy": "Buy",
     "sell": "Sell",
     "stake": "Stake",
-    "affiliate_awards" : "Affiliate Awards",
+    "affiliate_awards": "Affiliate Awards",
     "history": "History",
     "buy_history": "Buy History",
     "sell_history": "Sell History",
@@ -23,29 +21,29 @@
     "dashboard_header_card_description": "Buy & Sell BXG Instantly",
     "dashboard_header_card_buy": "Buy BXG",
     "dashboard_card_1": "Available",
-    "dashboard_card_2" : "Staked",
-    "dashboard_card_3" : "Referral Bonus",
-    "dashboard_card_4" : "Staking Referral Bonus",
-    "dashboard_card_5" : "Total Earnings",
-    "profile"   : "Profile",
-    "logout"    : "Logout",
+    "dashboard_card_2": "Staked",
+    "dashboard_card_3": "Referral Bonus",
+    "dashboard_card_4": "Staking Referral Bonus",
+    "dashboard_card_5": "Total Earnings",
+    "profile": "Profile",
+    "logout": "Logout",
     "buy_header": "Buy",
     "buy_button": "Buy Now",
     "sell_header": "Sell",
     "buy_sell_header_description": "BXG at the BitxGold",
-    "sell_desclaimer": "Disclaimer: Dear Members If you decide to withdraw you funds earlier than 6 month, there would be a penalty charge on your account. For further information, please refer to our QA on our website. Your funds would be returned within 24-48 hours. Thanks for your corporation and understanding",
+    "sell_desclaimer_1": "Disclaimer: Dear Members If you decide to withdraw you funds earlier than 10 months, there would be a penalty charge on your account. For further information, please refer to our",
+    "sell_desclaimer_2": "on our website. Your funds would be returned within 24-48 hours. Thanks for your corporation and understanding",
     "sell_button": "Sell Now",
     "total_amount_staked": "Total Amount Staked",
     "total_amount_claimed": "Total Amount Claimed",
-   
     "stake_header": "Stake",
     "stake_button": "Stake Now",
     "limit_bxg": "Minimum 20 BXG",
     "amount_already_staked": "Amount Already Staked",
     "claim_header": "Claim",
     "invite_your_contacts": "Invite Your Contacts",
-    "invite_description":"Share this with Your Contacts and Get Referral Bonus when you Buy or Sell. Note that Refer Code can Only be Redeemed Once",
-    "refer_code_title":"Your Referral Code",
+    "invite_description": "Share this with Your Contacts and Get Referral Bonus when you Buy or Sell. Note that Refer Code can Only be Redeemed Once",
+    "refer_code_title": "Your Referral Code",
     "you_are_currently_referred_by": "You are currently referred by",
     "your_wallet": "Your Wallet",
     "referred_wallet": "Referred Wallet",
@@ -73,16 +71,14 @@
     "entries": "Entries",
     "no_data_available": "No data available in table",
     "Bought": "Bought",
-    "of"    : "of",
-
+    "of": "of",
     "admin_dashboard": "Admin Dashboard",
     "admindashboard": "Admin Dashboard",
-    "requests" : "Requests",
+    "requests": "Requests",
     "admin_buy_history": "Admin Buy History",
     "admin_sell_history": "Admin Sell History",
     "admin_stake_history": "Admin Stake History",
     "admin_setting": "Admin Settings",
-
     "users": "Users",
     "total": "Total",
     "sell_requests": "Sell Requests",
@@ -90,7 +86,7 @@
     "rejected_requests": "Rejected Requests",
     "pending_requests": "Pending Requests",
     "user_history": "User History",
-    "approval"  : "Approval",
+    "approval": "Approval",
     "set_withdrawal_fee": "Set Withdrawal Fee",
     "set": "Set",
     "setting": "Setting",
@@ -98,8 +94,6 @@
     "reject": "Reject",
     "timer": "Timer",
     "reward": "Reward",
-
-
     "account_setup": "Account Setup",
     "email_address": "Email Address",
     "whatsapp_number": "Whatsapp Number",
@@ -107,11 +101,4 @@
     "email": "Email",
     "update": "Update",
     "copyRight": "Copyright © BitxGold"
-
-
-
-
-
-
-   
 }

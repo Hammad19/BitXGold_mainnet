@@ -1,6 +1,5 @@
-import axiosInstance from '../services/AxiosInstance';
-
+import axiosInstance from "../services/AxiosInstance";
 
 export function getProfile() {
-    return axiosInstance.get('/api/profile/');
+  return axiosInstance.get("/api/profile/");
 }

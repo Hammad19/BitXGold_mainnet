@@ -190,17 +190,27 @@ const Sell = () => {
             justifyContent: "center",
             alignItems: "center",
             marginTop: "50px",
-          }}
-        >
+          }}>
           <div
             style={{
               color: "white",
               marginBottom: "20px",
               marginTop: "-25px",
               fontSize: "15px",
-            }}
-          >
-            {t("sell_desclaimer")}
+            }}>
+            {t("sell_desclaimer_1") + " "}
+            <a
+              //open in new tab
+              target="_blank"
+              rel="noopener noreferrer"
+              href="https://bitx.gold/token-sale/"
+              style={{
+                fontSize: "15px",
+                textDecoration: "underline",
+              }}>
+              Q&A
+            </a>
+            {" " + t("sell_desclaimer_2")}
           </div>
           <div className="col-xl-6" style={{ height: "100%" }}>
             <div className="card">
@@ -233,8 +243,7 @@ const Sell = () => {
                               <div
                                 style={{ color: "darkgrey" }}
                                 type="number"
-                                className="custom-react-select form-control mb-3"
-                              >
+                                className="custom-react-select form-control mb-3">
                                 {" "}
                                 <img
                                   src={bxgicon}
@@ -266,8 +275,7 @@ const Sell = () => {
                               <div
                                 style={{ color: "darkgrey" }}
                                 type="text"
-                                className="custom-react-select form-control mb-3"
-                              >
+                                className="custom-react-select form-control mb-3">
                                 <img
                                   src={usdicon}
                                   width="25"
@@ -290,8 +298,7 @@ const Sell = () => {
                         onClick={() => {
                           handleSell();
                         }}
-                        className="btn btn-warning mr-0 "
-                      >
+                        className="btn btn-warning mr-0 ">
                         SELL NOW
                       </Link>
                     </div>
