@@ -209,7 +209,6 @@ const AdminHome = () => {
                                   <td>{item.wallet_address}</td>
                                   <td>{item.email}</td>
                                   <td>{item.whatsapp}</td>
-                                  {/* <td>{item.blockhash}</td> */}
                                   <td>{item.bxg ? item.bxg : "0"}</td>
                                 </tr>
                               ))}

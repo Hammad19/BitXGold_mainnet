@@ -12,7 +12,9 @@ import bitXStake from "../../../contractAbis/BitXStaking.json";
 import { ethers } from "ethers";
 import toast, { Toaster } from "react-hot-toast";
 import { useState } from "react";
-import axiosInstance from "../../../services/AxiosInstance";
+import axiosInstance, {
+  GetValuesForStakePage,
+} from "../../../services/AxiosInstance";
 import { useDispatch, useSelector } from "react-redux";
 import { ThemeContext } from "../../../context/ThemeContext";
 import { useContext } from "react";
@@ -32,33 +34,16 @@ const Stake = () => {
   const [stakedData, setStakedData] = useState([]);
 
   const state = useSelector((state) => state);
-
-  const [startTime, setstartTime] = useState(new Date());
   const [timeDifference, setTimeDifference] = useState(null);
   const [totalAmountStaked, setTotalAmountStaked] = useState(0);
   const [amountAlreadyStaked, setAmountAlreadyStaked] = useState(0);
   const [totalAmountClaimed, setTotalAmountClaimed] = useState(0);
   const [amountToStake, SetAmountToStake] = useState(0);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const [staking, setStaking] = useState();
-  const [bxg, setbxg] = useState();
-  const [stakingId, setStakingId] = useState();
 
-  //async function
-
-  const getStakingData = async () => {
-    setStaking(
-      new ethers.Contract(bitXStake.address, bitXStake.abi, state.auth.signer)
-    );
-    setbxg(new ethers.Contract(bitX.address, bitX.abi, state.auth.signer));
-  };
-
-  useEffect(() => {
-    getStakingData();
-  }, []);
-
-  //create a function to check weather the user has staked once or not
-  //if staked once then return true else return false
   const checkStake = async () => {
     const data1 = await axiosInstance.get(
       "/api/stake/" + state.auth.auth.walletaddress
@@ -69,45 +54,23 @@ const Stake = () => {
 
   const FetchData = async () => {
     setLoader(true);
-    const requestBody = {
-      wallet_address: state.auth.auth.walletaddress,
-    };
-    //const {data} = await axiosInstance.get('/api/bxg/'+requestBody.wallet_address);
-    const data1 = await axiosInstance.get(
-      "/api/stake/" + requestBody.wallet_address
-    );
-    const data = await axiosInstance.get(
-      "/api/stakehistory/" + requestBody.wallet_address
-    );
-    setStakeData(data?.data?.filter((item) => item.type === "Stake").reverse());
-
-    //filter data.data and add all the bxg values and set it to totalamountclaimed
-    var amountclaimed = 0;
-    data.data.filter((item) => {
-      if (item.type === "claim") {
-        amountclaimed = amountclaimed + item.bxg;
-      }
-    });
-
-    var amountstaked = 0;
-    data.data.filter((item) => {
-      if (item.type === "Stake") {
-        amountstaked = amountstaked + item.bxg;
-      }
-    });
-
-    data.data.filter((item) => {
-      if (item.type === "Staked") {
-        amountstaked = amountstaked + item.bxg;
-      }
-    });
-
-    setTotalAmountStaked(amountstaked);
-    setTotalAmountClaimed(amountclaimed);
-    setAmountAlreadyStaked(data1.data.bxg);
-    const date = new Date(data1.data.stake_time);
-
-    setstartTime(date);
+    try {
+      setStaking(
+        new ethers.Contract(bitXStake.address, bitXStake.abi, state.auth.signer)
+      );
+      const response = await GetValuesForStakePage(
+        state.auth.auth.walletaddress
+      );
+      setStakeData(response.stakedData);
+      setTotalAmountStaked(response.amountstaked);
+      setTotalAmountClaimed(response.amountclaimed);
+      setAmountAlreadyStaked(response.amountAlreadyStaked);
+    } catch (err) {
+      toast.error(err.message, {
+        position: "top-center",
+        style: { minWidth: 180 },
+      });
+    }
     setLoader(false);
   };
   useEffect(() => {
@@ -116,8 +79,6 @@ const Stake = () => {
 
   //handleclaim
 
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
   const handleStake = async () => {
     const logout = () => {
       dispatch(Logout(navigate));
@@ -125,7 +86,7 @@ const Stake = () => {
 
     let address = "";
     let signer = {};
-    if (state.auth.isLoggedInFromMobile == "mobile") {
+    if (state.auth.isLoggedInFromMobile === "mobile") {
       const RPC_URLS = {
         1: "https://bsc-dataseed1.binance.org/",
       };
@@ -180,9 +141,7 @@ const Stake = () => {
           return;
         }
       }
-
       try {
-        // input from user
         const amount = ethers.utils.parseEther(amountToStake);
         const amountApprove = ethers.utils.parseEther(
           "100000000000000000000000000000000000000000"
@@ -191,17 +150,11 @@ const Stake = () => {
           state.auth.auth.walletaddress,
           staking.address
         );
-        ////console.log("Approval Value", value.toString());
         if (value < amount) {
           await (await bxg.approve(staking.address, amountApprove)).wait();
         }
         const tx = await (await staking.stake(amount)).wait();
-        ////console.log(tx.events, "tx");
         const stakedId = tx.events[2].args.stakedId;
-        //console.log(stakedId.toString(), "stake id");
-        //console.log(parseInt(stakedId), "stake id");
-        //console.log(parseInt(stakedId).toString(), "stake id");
-        setStakingId(stakedId.toString()); // send this id to the backend
         if (tx.events) {
           toast.success(tx.blockHash, {
             position: "top-center",
@@ -223,8 +176,6 @@ const Stake = () => {
               });
             });
           if (data.stake_time) {
-            // const date = new Date(data.stake_time);
-            // setstartTime(date);
             setTotalAmountStaked(data.bxg);
             toast.success("Staked Successfully", {
               position: "top-center",
@@ -255,61 +206,8 @@ const Stake = () => {
     setLoader(false);
   };
 
-  const handleUnstake = async (bxgvalue) => {
-    setLoader(true);
-
-    if (bxgvalue <= 0) {
-      toast.error("Please Enter Value Greater then Zero", {
-        position: "top-center",
-        style: { minWidth: 180 },
-      });
-    } else {
-      try {
-        const amount = await ethers.utils.parseEther(bxgvalue.toString());
-        const tx = await (await staking.unStake(amount, stakingId)).wait(); //  replace this value
-        if (tx.events) {
-          toast.success(tx.blockHash, {
-            position: "top-center",
-            style: { minWidth: 180 },
-          });
-          const requestBody = {
-            wallet_address: state.auth.auth.walletaddress,
-            bxg: bxgvalue,
-            blockhash: tx.blockHash,
-          };
-          const { data } = await axiosInstance
-            .put("/api/stake/", requestBody)
-            .catch((err) => {
-              toast.error(err.response.data.message, {
-                position: "top-center",
-                style: { minWidth: 180 },
-              });
-            });
-          if (data.stake_time) {
-            //setstartTime(data.stake_time);
-            setTotalAmountStaked(data.bxg);
-            toast.success("UnStaked Successfully", {
-              position: "top-center",
-              style: { minWidth: 180 },
-            });
-          }
-        } else {
-          toast.error("Transaction Failed", {
-            position: "top-center",
-            style: { minWidth: 180 },
-          });
-        }
-      } catch (error) {
-        toast.error("Transaction Failed", {
-          position: "top-center",
-          style: { minWidth: 180 },
-        });
-      }
-    }
-    setLoader(false);
-  };
-
   const handleClaim = async (id, bxgvalue1, stakingID) => {
+    setLoader(true);
     const logout = () => {
       dispatch(Logout(navigate));
     };
@@ -325,12 +223,6 @@ const Stake = () => {
       return;
     }
 
-    //console.log(stakingID.toString());
-
-    //console.log("IN CLAIMING ");
-    setLoader(true);
-
-    //console.log(bxgvalue1.toString());
     if (bxgvalue1 <= 0) {
       toast.error("Amount less then Zero", {
         position: "top-center",
@@ -595,7 +487,11 @@ const Stake = () => {
                                                         data.bxg,
                                                         data.stake_id
                                                       )
-                                                    : handleUnstake(data.bxg);
+                                                    : handleClaim(
+                                                        data.id,
+                                                        data.bxg,
+                                                        data.stake_id
+                                                      );
                                                 }}
                                                 className="btn btn-warning mr-0 ">
                                                 {getType(data.stake_time)}

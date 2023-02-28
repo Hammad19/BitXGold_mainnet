@@ -11,7 +11,9 @@ import bitXSwap from "../../../contractAbis/BitXGoldSwap.json";
 import { ethers } from "ethers";
 import toast, { Toaster } from "react-hot-toast";
 import { useState } from "react";
-import axiosInstance from "../../../services/AxiosInstance";
+import axiosInstance, {
+  getChangedValue,
+} from "../../../services/AxiosInstance";
 import { ThemeContext } from "../../../context/ThemeContext";
 import axios from "axios";
 import Loader from "../Loader/Loader";
@@ -30,49 +32,38 @@ const Sell = () => {
   const [totalbxgvalue, settotalBxgvalue] = React.useState(
     (Usd * value).toFixed(2)
   );
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-  const [swap, setswap] = useState();
-  const [bitXGold, setbitXGold] = useState();
   const state = useSelector((state) => state);
   //total usdt value
 
-  const getSellData = async () => {
-    setswap(
-      new ethers.Contract(bitXSwap.address, bitXSwap.abi, state.auth.signer)
-    );
-    setbitXGold(new ethers.Contract(bitX.address, bitX.abi, state.auth.signer));
-  };
-
-  const getvaluer = async () => {
+  const FetchData = async () => {
     setLoader(true);
     try {
-      const { data } = await axios.get("https://www.goldapi.io/api/XAU/USD", {
-        headers: {
-          "x-access-token": "goldapi-4qjyptlcn9gjtf-io",
-          "Content-Type": "application/json",
-        },
-      });
+      const value = await getChangedValue();
 
-      if (data) {
-        setValue(data["price_gram_24k"] / 10);
+      if (value) {
+        setValue(value / 10);
       }
+      setLoader(false);
     } catch (err) {
-      //console.log(err);
+      toast.error("Server Error", {
+        position: "top-center",
+        style: { minWidth: 180 },
+      });
+      setLoader(false);
     }
-    setLoader(false);
   };
 
   useEffect(() => {
     changeBackground({ value: "dark", label: "Dark" });
-    getvaluer();
-    getSellData();
+    FetchData();
   }, []);
+
   useEffect(() => {
     if (totalbxgvalue === NaN) totalbxgvalue = 0.0;
   }, [totalbxgvalue]);
-
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
 
   const handleSell = async () => {
     const logout = () => {
@@ -81,7 +72,7 @@ const Sell = () => {
 
     let address = "";
     let signer = {};
-    if (state.auth.isLoggedInFromMobile == "mobile") {
+    if (state.auth.isLoggedInFromMobile === "mobile") {
       const RPC_URLS = {
         1: "https://bsc-dataseed1.binance.org/",
       };

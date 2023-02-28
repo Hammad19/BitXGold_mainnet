@@ -1,17 +1,10 @@
-import React, { useContext, useEffect, useReducer, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-//import {NavLink} from 'react-router-dom';
-//Import Components
+import "swiper/css";
 import { ThemeContext } from "../../../context/ThemeContext";
-import BalanceCardSlider from "./Dashboard/BalanceCardSlider";
-
-//import ServerStatusBar from './Dashboard/ServerStatusBar';
 import { useTranslation } from "react-i18next";
-//images
 import coin from "./../../../images/coin.png";
-import axiosInstance, {
-  getDetailsforDashboard,
-} from "../../../services/AxiosInstance";
+import { getDetailsforDashboard } from "../../../services/AxiosInstance";
 import { useSelector } from "react-redux";
 import toast, { Toaster } from "react-hot-toast";
 import Loader from "../Loader/Loader";
@@ -45,19 +38,15 @@ const Home = () => {
     setLoader(false);
   };
 
-  useEffect(() => {
-    FetchData();
-  }, []);
-
   const { changeBackground } = useContext(ThemeContext);
   useEffect(() => {
     changeBackground({ value: "dark", label: "Dark" });
+    FetchData();
   }, []);
 
   return (
     <>
       <Toaster />
-
       {loader === true ? (
         <Loader />
       ) : (

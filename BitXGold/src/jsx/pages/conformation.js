@@ -9,13 +9,8 @@ import axiosInstance from "../../services/AxiosInstance";
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import { Web3Provider } from "@ethersproject/providers";
 import { connect, useDispatch } from "react-redux";
-import {
-  useNavigate,
-  useLocation,
-} from "react-router-dom";
-import {
-  connectToMetaMask,
-} from "../../store/actions/AuthActions";
+import { useNavigate, useLocation } from "react-router-dom";
+import { connectToMetaMask } from "../../store/actions/AuthActions";
 const Conformation = (props) => {
   const [isreferred, setisreferred] = useState(false);
   const dispatch = useDispatch();
@@ -298,8 +293,7 @@ const Conformation = (props) => {
               <Form>
                 <Form.Group
                   className="mb-3"
-                  controlId="exampleForm.ControlInput1"
-                >
+                  controlId="exampleForm.ControlInput1">
                   <Form.Label>
                     Please Enter Referral Address. <br />
                     If you don't have any refferal address please use this :

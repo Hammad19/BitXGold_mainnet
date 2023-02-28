@@ -9,7 +9,9 @@ import bitXSwap from "../../../contractAbis/BitXGoldSwap.json";
 import { ethers } from "ethers";
 import toast, { Toaster } from "react-hot-toast";
 import { useState } from "react";
-import axiosInstance from "../../../services/AxiosInstance";
+import axiosInstance, {
+  getChangedValue,
+} from "../../../services/AxiosInstance";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import Loader from "../Loader/Loader";
@@ -19,55 +21,40 @@ import { Logout } from "../../../store/actions/AuthActions";
 
 const Buy = () => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [loader, setloader] = useState(false);
   const [value, setValue] = useState(0);
   const [bxgvalue, setBxgvalue] = useState(0);
   const [totalUsd, setTotalUsd] = useState(bxgvalue * value);
-  const [swap, setswap] = useState();
-  const [usdtToken, setusdtToken] = useState();
 
   const state = useSelector((state) => state);
 
   const { changeBackground } = useContext(ThemeContext);
 
-  const getSellData = async () => {
-    setswap(
-      new ethers.Contract(bitXSwap.address, bitXSwap.abi, state.auth.signer)
-    );
-    setusdtToken(
-      new ethers.Contract(usdt.address, usdt.abi, state.auth.signer)
-    );
-  };
-
-  const getvaluer = async () => {
+  const FetchData = async () => {
+    setloader(true);
     try {
-      const { data } = await axios.get("https://www.goldapi.io/api/XAU/USD", {
-        headers: {
-          "x-access-token": "goldapi-4qjyptlcn9gjtf-io",
-          "Content-Type": "application/json",
-        },
-      });
+      const value = await getChangedValue();
 
-      if (data) {
-        setValue(data["price_gram_24k"] / 10);
+      if (value) {
+        setValue(value / 10);
       }
+      setloader(false);
     } catch (err) {
       toast.error("Server Error", {
         position: "top-center",
         style: { minWidth: 180 },
       });
+      setloader(false);
     }
   };
 
   useEffect(() => {
     changeBackground({ value: "dark", label: "Dark" });
-    getvaluer();
-    getSellData();
+    FetchData();
   }, []);
 
-  const navigate = useNavigate();
-
-  const dispatch = useDispatch();
   const handleBuy = async () => {
     const logout = () => {
       dispatch(Logout(navigate));
@@ -75,7 +62,7 @@ const Buy = () => {
 
     let address = "";
     let signer = {};
-    if (state.auth.isLoggedInFromMobile == "mobile") {
+    if (state.auth.isLoggedInFromMobile === "mobile") {
       const RPC_URLS = {
         1: "https://bsc-dataseed1.binance.org/",
       };
@@ -232,8 +219,7 @@ const Buy = () => {
             justifyContent: "center",
             alignItems: "center",
             marginTop: "50px",
-          }}
-        >
+          }}>
           <div className="col-xl-6" style={{ height: "100%" }}>
             <div className="card">
               <div className="card-body pb-2">
@@ -265,8 +251,7 @@ const Buy = () => {
                               <div
                                 style={{ color: "darkgrey" }}
                                 type="text"
-                                className="custom-react-select form-control mb-3"
-                              >
+                                className="custom-react-select form-control mb-3">
                                 {" "}
                                 <img
                                   src={bxgicon}
@@ -299,8 +284,7 @@ const Buy = () => {
                               <div
                                 style={{ color: "darkgrey" }}
                                 type="text"
-                                className="custom-react-select form-control mb-3"
-                              >
+                                className="custom-react-select form-control mb-3">
                                 <img
                                   src={usdicon}
                                   width="25"
@@ -321,8 +305,7 @@ const Buy = () => {
                     <div className="text-center mt-4 mb-4">
                       <Link
                         onClick={handleBuy}
-                        className="btn btn-warning mr-0 "
-                      >
+                        className="btn btn-warning mr-0 ">
                         {t("buy_button")}
                       </Link>
                     </div>
