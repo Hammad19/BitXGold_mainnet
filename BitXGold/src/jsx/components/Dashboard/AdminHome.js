@@ -1,28 +1,19 @@
 import React, { useContext, useEffect, useReducer, useState } from "react";
 import { Link } from "react-router-dom";
-//import {NavLink} from 'react-router-dom';
-import loadable from "@loadable/component";
-import pMinDelay from "p-min-delay";
-import { Button, Dropdown, Form, Modal, Nav, Tab } from "react-bootstrap";
-import { Swiper, SwiperSlide } from "swiper/react";
+
+import { Tab } from "react-bootstrap";
+
 //Import Components
 import { ThemeContext } from "../../../context/ThemeContext";
 import { useTranslation } from "react-i18next";
 //import ServerStatusBar from './Dashboard/ServerStatusBar';
-import { LtcIcon, BtcIcon, XtzIcon, EthIcon } from "./SvgIcon";
-import OrderTab from "../Trading/Future/OrderTab";
-import TradeTab from "../Trading/Future/TradeTab";
-//images
-import coin from "./../../../images/coin.png";
-import metaverse from "./../../../images/metaverse.png";
+
 import axiosInstance from "../../../services/AxiosInstance";
-import { ethers } from "ethers";
-import { useSelector } from "react-redux";
 import toast, { Toaster } from "react-hot-toast";
 import { useRef } from "react";
 
 const AdminHome = () => {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
 
   const [requests, setRequests] = useState([]);
   const [data, setData] = useState([]);
