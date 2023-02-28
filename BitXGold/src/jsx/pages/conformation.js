@@ -63,7 +63,6 @@ const Conformation = (props) => {
         });
         setLoader(false);
       });
-
     if (!data) {
       toast.error(data.message, {
         position: "top-center",
@@ -140,7 +139,7 @@ const Conformation = (props) => {
   async function save() {
     let address = "";
     let signer = {};
-    if (state.auth.isLoggedInFromMobile == "mobile") {
+    if (state.auth.isLoggedInFromMobile === "mobile") {
       const RPC_URLS = {
         1: "https://bsc-dataseed1.binance.org/",
       };
@@ -196,6 +195,7 @@ const Conformation = (props) => {
           setLoader(false);
         }
       } else {
+        console.log(error);
         toast.error("Transaction Failed", {
           position: "top-center",
           style: { minWidth: 180 },
