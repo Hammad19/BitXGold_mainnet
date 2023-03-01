@@ -11,9 +11,10 @@ import Malay from "../../../images/Malay.png";
 import Indonesia from "../../../images/Indonesia.png";
 import avatar from "../../../images/avatar/2.jpg";
 import profile from "../../../images/profile/pic1.jpg";
-import { changeLanguage } from "i18next";
+import { useSelector } from "react-redux";
 
 const Header = ({ onNote }) => {
+  const state = useSelector((state) => state);
   //change the language whenever the user selects a new language
   const changeLanguage = (lng) => {
     i18n.changeLanguage(lng);
@@ -159,24 +160,26 @@ const Header = ({ onNote }) => {
                     <Dropdown.Menu
                       align="right"
                       className="dropdown-menu dropdown-menu-end">
-                      <Link to="/profile" className="dropdown-item ai-icon">
-                        <svg
-                          id="icon-user1"
-                          xmlns="http://www.w3.org/2000/svg"
-                          className="text-primary me-1"
-                          width={18}
-                          height={18}
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth={2}
-                          strokeLinecap="round"
-                          strokeLinejoin="round">
-                          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                          <circle cx={12} cy={7} r={4} />
-                        </svg>
-                        <span className="ms-2"> {t("profile")} </span>
-                      </Link>
+                      {!state.auth.auth.isAdmin && (
+                        <Link to="/profile" className="dropdown-item ai-icon">
+                          <svg
+                            id="icon-user1"
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="text-primary me-1"
+                            width={18}
+                            height={18}
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth={2}
+                            strokeLinecap="round"
+                            strokeLinejoin="round">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                            <circle cx={12} cy={7} r={4} />
+                          </svg>
+                          <span className="ms-2"> {t("profile")} </span>
+                        </Link>
+                      )}
 
                       <LogoutPage />
                     </Dropdown.Menu>
