@@ -70,9 +70,6 @@ const AdminHome = () => {
     setLoader(true);
     try {
       const { data } = await axiosInstance.get("/api/profile/");
-
-      //
-
       if (data.message) {
         toast.error(data.message, {
           style: { minWidth: 180 },

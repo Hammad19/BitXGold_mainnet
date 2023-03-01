@@ -1,38 +1,25 @@
-import React, { useContext, useEffect, useReducer, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 //import {NavLink} from 'react-router-dom';
-import loadable from "@loadable/component";
-import pMinDelay from "p-min-delay";
 import moment from "moment";
 import DateRangePicker from "react-bootstrap-daterangepicker";
-import {
-  Button,
-  Dropdown,
-  Form,
-  Modal,
-  Nav,
-  Tab,
-  Badge,
-} from "react-bootstrap";
-import { Swiper, SwiperSlide } from "swiper/react";
+import { Tab, Badge } from "react-bootstrap";
 //Import Components
 import { ThemeContext } from "../../../context/ThemeContext";
-import USDT from "../../../contractAbis/USDT.json";
-//import ServerStatusBar from './Dashboard/ServerStatusBar';
 import { useTranslation } from "react-i18next";
 
 //images
 
 import axiosInstance from "../../../services/AxiosInstance";
-import { ethers } from "ethers";
 import { useSelector } from "react-redux";
 import toast, { Toaster } from "react-hot-toast";
 import { useRef } from "react";
 
 const BuyHistory = () => {
+  const { changeBackground } = useContext(ThemeContext);
   const [date, setdate] = useState("");
   const [dataMain, setdataMain] = useState([]);
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const [loader, setLoader] = useState(false);
   const state = useSelector((state) => state);
   const [requests, setRequests] = useState([]);
@@ -82,7 +69,6 @@ const BuyHistory = () => {
     chageData(activePag.current * sort, (activePag.current + 1) * sort);
     settest(i);
   };
-  // use effect
   useEffect(() => {
     setTimeout(() => {
       setData(document.querySelectorAll("#future_wrapper tbody tr"));
@@ -105,10 +91,7 @@ const BuyHistory = () => {
             style: { minWidth: 180 },
             position: "top-center",
           });
-          //console.log(err);
         });
-
-      //console.log(data);
 
       let temp = filterArray(
         data,
@@ -119,7 +102,7 @@ const BuyHistory = () => {
       setRequests(temp.reverse());
       setdataMain(data);
 
-      //setActiveData(pendingrequests);
+
     } catch (err) {
       toast.error(err.message, {
         style: { minWidth: 180 },
@@ -129,16 +112,12 @@ const BuyHistory = () => {
   };
 
   useEffect(() => {
+    changeBackground({ value: "dark", label: "Dark" });
     FetchData();
   }, []);
 
-  const { changeBackground } = useContext(ThemeContext);
-  useEffect(() => {
-    changeBackground({ value: "dark", label: "Dark" });
-  }, []);
   function handleCallback(start, end, label) {
     setdate(start.format("YYYY-MM-DD") + " - " + end.format("YYYY-MM-DD"));
-
     setRequests(
       filterArray(
         dataMain,
@@ -152,22 +131,13 @@ const BuyHistory = () => {
     const [start, end] = dateRange.split(" - ");
     return array.filter((item) => {
       const itemDate = new Date(item.updatedAt);
-      //console.log(itemDate, "itemDate");
-      //console.log(new Date(start), "start");
-      //console.log(new Date(end), "end");
-
-      //set end date to next day of end date
-
       const endDate = new Date(end);
-      // //endDate.setDate(endDate.getDate() + 1);
-      //console.log(itemDate >= new Date(start) && itemDate <= new Date(end));
       return itemDate >= new Date(start) && itemDate <= new Date(endDate);
     });
   }
   return (
     <>
       <Toaster />
-
       <div className="row">
         <div className="col-xl-12">
           <div className="card">

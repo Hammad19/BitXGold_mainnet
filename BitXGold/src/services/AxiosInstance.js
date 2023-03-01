@@ -2,9 +2,9 @@ import axios from "axios";
 import { store } from "../store/store";
 
 const axiosInstance = axios.create({
-  //baseURL: `http://localhost:4000`,
+  baseURL: `http://localhost:4000`,
   //baseURL: `https://api.bitx.gold`,
-  baseURL: `https://ill-veil-colt.cyclic.app`,
+  //baseURL: `https://ill-veil-colt.cyclic.app`,
 });
 
 axiosInstance.interceptors.request.use((config) => {
@@ -115,8 +115,6 @@ export const GetValuesForReferPage = async (walletAddress) => {
     "/api/stakerefreward/" + walletAddress
   );
 
-  //console.log(data);
-
   return {
     level1count,
     level2count,
@@ -146,6 +144,23 @@ export const CountLevels = (data, walletAddress) => {
     level1,
     level2,
     level3,
+  };
+};
+
+export const GetValuesForBonusPage = async (walletAddress) => {
+  var referCode = "0x0000000000000000000000";
+  const { data } = await axiosInstance.get(
+    "/api/bonusrefreward/" + walletAddress
+  );
+  const isreferedData = await axiosInstance.get(
+    "/api/bonusrefer/" + walletAddress
+  );
+  if (isreferedData.data.isRefered) {
+    referCode = isreferedData.data.refer_code;
+  }
+  return {
+    referCode,
+    referalData: data,
   };
 };
 
